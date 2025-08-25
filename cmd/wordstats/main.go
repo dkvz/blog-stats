@@ -24,27 +24,38 @@ func main() {
 	flag.Parse()
 	*mode = strings.TrimSpace(strings.ToLower(*mode))
 
+	iMode := 0
+
 	switch *mode {
 	case "plot":
-		dbs, err := db.NewDBSqlite(config.DbPath)
-		if err != nil {
-			fmt.Println("encountered DB error")
-			panic(err)
-		}
-		if ids, err := dbs.AllPublishedArticleIds(); err == nil {
-			fmt.Printf("%v", ids)
-		} else {
-			fmt.Println("encountered DB error for query")
-			panic(err)
-		}
-
+		iMode = 0
 	case "factors":
-		fmt.Println("Factors mode")
+		iMode = 1
 	case "verify":
-		fmt.Println("Verify mode")
+		iMode = 2
 	default:
 		flag.Usage()
 		return
 	}
 
+	dbs, err := db.NewDBSqlite(config.DbPath)
+	if err != nil {
+		fmt.Println("encountered DB error")
+		panic(err)
+	}
+
+	if iMode == 0 {
+		runModePlot(dbs)
+	}
+}
+
+func runModePlot(dbs *db.DbSqlite) error {
+	if ids, err := dbs.AllPublishedArticleIds(); err == nil {
+		fmt.Printf("%v", ids)
+	} else {
+		fmt.Println("encountered DB error for query")
+		panic(err)
+	}
+
+	return nil
 }
