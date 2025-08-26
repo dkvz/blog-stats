@@ -45,3 +45,17 @@ func TestBigTag(t *testing.T) {
 		t.Errorf("TestBigTag: count is %v, should be %v", wc, want)
 	}
 }
+
+func TestUntaggedText(t *testing.T) {
+	sut := `text out of any tag <i>italic</i> word
+	<p>Some text</p>
+	untagged again
+	</div>
+`
+
+	want := 11
+	wc := WordCount(sut)
+	if wc != want {
+		t.Errorf("TestUntaggedText: count is %v, should be %v", wc, want)
+	}
+}
