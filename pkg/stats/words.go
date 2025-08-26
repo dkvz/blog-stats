@@ -7,7 +7,7 @@ import (
 )
 
 var paReg = regexp.MustCompile(
-	`</?(p|h\d|a|i|b|small|strike|sub|sup|abbr|blockquote|ul|ol|li|strong|em).*?>`,
+	`</?(p|h\d|a|i|b|small|strike|sub|sup|abbr|blockquote|ul|ol|li|strong|em|del).*?>`,
 )
 
 // To use at the end to clean up the remaining tags

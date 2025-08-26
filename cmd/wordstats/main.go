@@ -61,8 +61,6 @@ func runModePlot(dbs *db.DbSqlite) error {
 	if err != nil {
 		fmt.Println("encountered DB error getting article content")
 	}
-
-	fmt.Println(*content)
 	count := stats.WordCount(content)
 
 	fmt.Printf("Word Count for article: %v\n", count)
