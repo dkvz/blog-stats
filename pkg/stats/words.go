@@ -6,8 +6,10 @@ import (
 	"strings"
 )
 
+// Identify tags fr which we have to keep the inner content
+// I certainly missed a whole bunch of these
 var paReg = regexp.MustCompile(
-	`</?(p|h\d|a|i|b|small|strike|sub|sup|abbr|blockquote|ul|ol|li|strong|em|del).*?>`,
+	`</?(p|h\d|a|i|b|small|strike|sub|sup|abbr|span|blockquote|ul|ol|li|strong|em|del).*?>`,
 )
 
 // To use at the end to clean up the remaining tags
