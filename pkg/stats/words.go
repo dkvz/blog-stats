@@ -6,7 +6,10 @@ import (
 	"strings"
 )
 
-var paReg = regexp.MustCompile(`</?(p|a|i|b|small|strike|sub|sup|abbr).*?>`)
+var paReg = regexp.MustCompile(`</?(p|h\d|a|i|b|small|strike|sub|sup|abbr|blockquote).*?>`)
+
+// To use at the end to clean up the remaining tags
+var tagsReg = regexp.MustCompile(`<.+?>.+?</.+?>`)
 
 func WordCount(content string) int {
 	// Remove all <p> and </p>
@@ -15,7 +18,9 @@ func WordCount(content string) int {
 	// Remove most tags and their inner content
 	// We can keep blockquote contents
 	res := strings.TrimSpace(paReg.ReplaceAllString(content, ""))
+	res = tagsReg.ReplaceAllString(res, "")
 	res = strings.ReplaceAll(res, "\n", " ")
+	res = strings.ReplaceAll(res, "&nbsp;", " ")
 
 	fmt.Println(res)
 
