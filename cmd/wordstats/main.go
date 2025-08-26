@@ -7,6 +7,7 @@ import (
 
 	"github.com/dkvz/blog-stats/pkg/cli"
 	"github.com/dkvz/blog-stats/pkg/db"
+	"github.com/dkvz/blog-stats/pkg/stats"
 )
 
 func main() {
@@ -50,12 +51,21 @@ func main() {
 }
 
 func runModePlot(dbs *db.DbSqlite) error {
-	if ids, err := dbs.AllPublishedArticleIds(); err == nil {
-		fmt.Printf("%v", ids)
-	} else {
-		fmt.Println("encountered DB error for query")
+	ids, err := dbs.AllPublishedArticleIds()
+	if err != nil {
+		fmt.Println("encountered DB error getting article ids")
 		panic(err)
 	}
+
+	content, err := dbs.ArticleContentById(ids[0])
+	if err != nil {
+		fmt.Println("encountered DB error getting article content")
+	}
+
+	fmt.Println(*content)
+	count := stats.WordCount(content)
+
+	fmt.Printf("Word Count for article: %v\n", count)
 
 	return nil
 }

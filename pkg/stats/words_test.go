@@ -7,7 +7,7 @@ func TestInlineTagsRemoval(t *testing.T) {
 		<p>More text <a href="/testing" class="some">link text</a></p>`
 
 	want := 6
-	wc := WordCount(sut)
+	wc := WordCount(&sut)
 	if wc != want {
 		t.Errorf("TestWordCountInline: count is %v, should be %v", wc, want)
 	}
@@ -23,7 +23,7 @@ func TestRemainingTagsRemoval(t *testing.T) {
 		<img src="img.png" alt="some image">`
 
 	want := 8
-	wc := WordCount(sut)
+	wc := WordCount(&sut)
 	if wc != want {
 		t.Errorf("TestRemainingTagsRemoval: count is %v, should be %v", wc, want)
 	}
@@ -40,7 +40,7 @@ func TestBigTag(t *testing.T) {
 </div>`
 
 	want := 8
-	wc := WordCount(sut)
+	wc := WordCount(&sut)
 	if wc != want {
 		t.Errorf("TestBigTag: count is %v, should be %v", wc, want)
 	}
@@ -54,8 +54,21 @@ func TestUntaggedText(t *testing.T) {
 `
 
 	want := 11
-	wc := WordCount(sut)
+	wc := WordCount(&sut)
 	if wc != want {
 		t.Errorf("TestUntaggedText: count is %v, should be %v", wc, want)
+	}
+}
+
+func TestBetweenBrs(t *testing.T) {
+	sut := `text out of any tag word<br /><br />
+	Some text
+	<br /><br />
+	untagged again `
+
+	want := 10
+	wc := WordCount(&sut)
+	if wc != want {
+		t.Errorf("TestBetweenBrs: count is %v, should be %v", wc, want)
 	}
 }

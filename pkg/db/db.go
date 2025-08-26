@@ -34,6 +34,10 @@ func (dbs *DbSqlite) AllPublishedArticleIds() ([]uint, error) {
 	}
 	defer rows.Close()
 
+	// If this seems overcomplicated, that's because it is.
+	// People often use the sqlx package to add annotations
+	// to entity structs making the conversion automatic.
+	// Otherwise we have to use Scan.
 	var ids []uint
 	for rows.Next() {
 		var id uint
@@ -44,4 +48,19 @@ func (dbs *DbSqlite) AllPublishedArticleIds() ([]uint, error) {
 	}
 
 	return ids, nil
+}
+
+func (dbs *DbSqlite) ArticleContentById(id uint) (*string, error) {
+	row := dbs.db.QueryRowContext(
+		dbs.ctx,
+		`SELECT content FROM articles WHERE id=?`, id,
+	)
+
+	var content *string
+	err := row.Scan(&content)
+	if err != nil {
+		return nil, err
+	}
+
+	return content, nil
 }
