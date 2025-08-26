@@ -25,6 +25,23 @@ func TestRemainingTagsRemoval(t *testing.T) {
 	want := 8
 	wc := WordCount(sut)
 	if wc != want {
-		t.Errorf("TestWordCountInline: count is %v, should be %v", wc, want)
+		t.Errorf("TestRemainingTagsRemoval: count is %v, should be %v", wc, want)
+	}
+}
+
+func TestBigTag(t *testing.T) {
+	sut := `<h2>Title <b>with html in it</b></h2>
+
+	<p>Some text&nbsp;here</p>
+
+	<div class="card-panel z-depth-3 article-image center-image" style="max-width: 1000px">
+<a href="/wp-content/blog.png" target="_blank"><img src="/wp-content/blog.png" alt="Some image" class="responsive-img"></a>
+<div class="image-legend">Image legends are currently not counted in</div>
+</div>`
+
+	want := 8
+	wc := WordCount(sut)
+	if wc != want {
+		t.Errorf("TestBigTag: count is %v, should be %v", wc, want)
 	}
 }

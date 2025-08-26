@@ -6,11 +6,15 @@ import (
 	"strings"
 )
 
-var paReg = regexp.MustCompile(`</?(p|h\d|a|i|b|small|strike|sub|sup|abbr|blockquote).*?>`)
+var paReg = regexp.MustCompile(
+	`</?(p|h\d|a|i|b|small|strike|sub|sup|abbr|blockquote).*?>`,
+)
 
 // To use at the end to clean up the remaining tags
 // var tagsReg = regexp.MustCompile(`<.+?>.+?</.+?>`)
-var tagsReg = regexp.MustCompile(`<[^>]*>[^>]*<[^>]*>`)
+// Will also destroy image legends but I can live with that
+// var tagsReg = regexp.MustCompile(`<[^>]*>[^>]*<[^>]*>`)
+var tagsReg = regexp.MustCompile(`<[^>]*>[^<]*<[^>]*>`)
 
 var consSpaceReg = regexp.MustCompile(`\s{2,}`)
 
