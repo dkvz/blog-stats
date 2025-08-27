@@ -8,3 +8,6 @@ As always, doing useless things to learn. Although, aren't all the things we do 
 
 ## References
 - [SQlite lib docs](https://practicalgobook.net/posts/go-sqlite-no-cgo/)
+
+## TODO
+- [ ] Use readonly or writeonly (?) channels when possible - I always forget about that
