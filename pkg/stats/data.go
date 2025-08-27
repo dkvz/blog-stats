@@ -6,6 +6,8 @@ type ArticleLengthStat struct {
 }
 
 type ArticleLengthStatResult struct {
-	Stats   []ArticleLengthStat
+	stats   []ArticleLengthStat
 	Average float64
 }
+
+// TODO: Implement a push method for the results
