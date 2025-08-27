@@ -6,8 +6,10 @@ type ArticleLengthStat struct {
 }
 
 type ArticleLengthStatResult struct {
-	stats   []ArticleLengthStat
+	Stats   []ArticleLengthStat
 	Average float64
 }
 
-// TODO: Implement a push method for the results
+func (alsr *ArticleLengthStatResult) PushStat(s *ArticleLengthStat) {
+	alsr.Stats = append(alsr.Stats, *s)
+}

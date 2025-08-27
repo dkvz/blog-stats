@@ -30,6 +30,7 @@ func lengthStatsForSlice(
 	resChan chan<- stats.ArticleLengthStatResult,
 	errChan chan<- error,
 ) {
+	res := stats.ArticleLengthStatResult{}
 
 	for _, id := range ids {
 		content, err := dbs.ArticleContentById(id)
@@ -39,6 +40,16 @@ func lengthStatsForSlice(
 		}
 
 		// Compute word count:
+		stat := &stats.ArticleLengthStat{
+			WordCount: stats.WordCount(content),
+			Length:    len(*content),
+		}
+		res.PushStat(stat)
+	}
+
+	// Compute local average:
+	for _, wc := range res.Stats {
 
 	}
+
 }
