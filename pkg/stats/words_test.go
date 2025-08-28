@@ -72,3 +72,16 @@ func TestBetweenBrs(t *testing.T) {
 		t.Errorf("TestBetweenBrs: count is %v, should be %v", wc, want)
 	}
 }
+
+func TestHtmlComments(t *testing.T) {
+	sut := `<!-- some comment here -->
+	<!-- Another comment -->
+	<p>Article text</p>
+	<p>Article text again</p>`
+
+	want := 5
+	wc := WordCount(&sut)
+	if wc != want {
+		t.Errorf("TestHtmlComments: count is %v, should be %v", wc, want)
+	}
+}
