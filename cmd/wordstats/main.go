@@ -7,6 +7,7 @@ import (
 
 	"github.com/dkvz/blog-stats/pkg/cli"
 	"github.com/dkvz/blog-stats/pkg/db"
+	"github.com/dkvz/blog-stats/pkg/runtime"
 )
 
 func main() {
@@ -56,7 +57,7 @@ func runModePlot(dbs *db.DbSqlite) {
 		panic(err)
 	}
 
-	results, err := LengthStatsForIds(ids, dbs)
+	results, err := runtime.LengthStatsForIds(ids, dbs)
 	if err != nil {
 		fmt.Println("error in the subroutines")
 		panic(err)
