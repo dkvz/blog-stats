@@ -77,7 +77,8 @@ func TestHtmlComments(t *testing.T) {
 	sut := `<!-- some comment here -->
 	<!-- Another comment -->
 	<p>Article text</p>
-	<p>Article text again</p>`
+	<p>Article text again</p>
+	<!-- Ends with a comment -->`
 
 	want := 5
 	wc := WordCount(&sut)
