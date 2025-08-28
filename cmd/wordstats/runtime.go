@@ -35,17 +35,16 @@ func LengthStatsForIds(ids []uint, dbs *db.DbSqlite) (*stats.ArticleLengthStatRe
 	}
 
 	// Process results
+	// Might get stuck if one routine gets stuck as well
 	final := stats.NewArticleLengthStatResult()
-	select {
-	case result := <-resChan:
-		fmt.Printf("Result in: %v items; avg %v\n", len(result.Stats), result.Average)
-		final.Stats = append(final.Stats, result.Stats...)
-		// Might get stuck if one routine gets stuck as well
-		if len(final.Stats) == len(ids) {
-			break
+	for len(final.Stats) < len(ids) {
+		select {
+		case result := <-resChan:
+			fmt.Printf("Result in: %v items; avg %v\n", len(result.Stats), result.Average)
+			final.Stats = append(final.Stats, result.Stats...)
+		case err := <-errChan:
+			return nil, err
 		}
-	case err := <-errChan:
-		return nil, err
 	}
 
 	// Compute stats:

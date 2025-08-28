@@ -64,7 +64,7 @@ func runModePlot(dbs *db.DbSqlite) {
 
 	fmt.Printf("Final average: %v\n", results.Average)
 	for _, wc := range results.Stats {
-		fmt.Printf("%v\n%v", wc.WordCount, wc.Length)
+		fmt.Printf("%v\t%v\n", wc.WordCount, wc.Length)
 	}
 
 }
