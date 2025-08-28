@@ -11,6 +11,11 @@ var paReg = regexp.MustCompile(
 	`</?(p|h\d|a|i|b|small|strike|sub|sup|abbr|span|blockquote|ul|ol|li|strong|em|del).*?>`,
 )
 
+// Looks like I need something extra for the comments
+// I could probably combine it with the later one but
+// it feels safer as its own thing
+var comsReg = regexp.MustCompile(`(?sU)<!--.*-->`)
+
 // To use at the end to clean up the remaining tags
 // var tagsReg = regexp.MustCompile(`<.+?>.+?</.+?>`)
 // Will also destroy image legends but I can live with that
@@ -31,6 +36,7 @@ func WordCount(content *string) int {
 	// Remove most tags and their inner content
 	// We can keep blockquote contents
 	res := paReg.ReplaceAllString(*content, "")
+	res = comsReg.ReplaceAllString(res, "")
 	res = tagsReg.ReplaceAllString(res, "")
 
 	res = simpleTagsReg.ReplaceAllString(res, "")
