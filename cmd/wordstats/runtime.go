@@ -12,6 +12,11 @@ import (
 
 func LengthStatsForIds(ids []uint, dbs *db.DbSqlite) (*stats.ArticleLengthStatResult, error) {
 	routinesCount := runtime.NumCPU()
+	if len(ids) < routinesCount {
+		// TODO: That level of multithreading is probably ineffective and
+		// we should lower the thread count further.
+		routinesCount = len(ids)
+	}
 
 	resChan := make(chan stats.ArticleLengthStatResult)
 	errChan := make(chan error)
@@ -48,8 +53,15 @@ func lengthStatsForSlice(
 	}
 
 	// Compute local average:
+	sum := 0
 	for _, wc := range res.Stats {
-
+		sum += wc.WordCount
+	}
+	// A non zero sum means we got at least 1 result
+	// So no divide by 0 is possible
+	if sum > 0 {
+		res.Average = float64(sum) / float64(len(res.Stats))
 	}
 
+	resChan <- res
 }
