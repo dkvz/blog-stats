@@ -7,7 +7,6 @@ import (
 
 	"github.com/dkvz/blog-stats/pkg/cli"
 	"github.com/dkvz/blog-stats/pkg/db"
-	"github.com/dkvz/blog-stats/pkg/stats"
 )
 
 func main() {
@@ -50,20 +49,22 @@ func main() {
 	}
 }
 
-func runModePlot(dbs *db.DbSqlite) error {
+func runModePlot(dbs *db.DbSqlite) {
 	ids, err := dbs.AllPublishedArticleIds()
 	if err != nil {
 		fmt.Println("encountered DB error getting article ids")
 		panic(err)
 	}
 
-	content, err := dbs.ArticleContentById(ids[0])
+	results, err := LengthStatsForIds(ids, dbs)
 	if err != nil {
-		fmt.Println("encountered DB error getting article content")
+		fmt.Println("error in the subroutines")
+		panic(err)
 	}
-	count := stats.WordCount(content)
 
-	fmt.Printf("Word Count for article: %v\n", count)
+	fmt.Printf("Final average: %v\n", results.Average)
+	for _, wc := range results.Stats {
+		fmt.Printf("%v\n%v", wc.WordCount, wc.Length)
+	}
 
-	return nil
 }

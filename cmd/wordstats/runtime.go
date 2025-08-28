@@ -1,41 +1,67 @@
 package main
 
 import (
+	"fmt"
+	"math"
 	"runtime"
 
 	"github.com/dkvz/blog-stats/pkg/db"
 	"github.com/dkvz/blog-stats/pkg/stats"
 )
 
-// resChan chan<- stats.ArticleLengthStatResult,
-// errChan chan<- error,
-
 func LengthStatsForIds(ids []uint, dbs *db.DbSqlite) (*stats.ArticleLengthStatResult, error) {
-	routinesCount := runtime.NumCPU()
-	if len(ids) < routinesCount {
-		// TODO: That level of multithreading is probably ineffective and
-		// we should lower the thread count further.
-		routinesCount = len(ids)
-	}
+	// TODO: Having one item per routine is certainly ineffective and
+	// we should lower the thread count further than that.
+	routinesCount := min(len(ids), runtime.NumCPU())
 
-	resChan := make(chan stats.ArticleLengthStatResult)
+	resChan := make(chan *stats.ArticleLengthStatResult)
 	errChan := make(chan error)
 
-	for i := 0; i < routinesCount; i++ {
+	itemsCount := len(ids)
+	n := int(math.Ceil(float64(itemsCount) / float64(routinesCount)))
+	remainingRoutines := routinesCount
+
+	for sliceAt := 0; remainingRoutines > 0; sliceAt += n {
 		// Start the goroutines
+		fmt.Printf("Routine starting at %v up to %v included\n", sliceAt, sliceAt+n)
+		go lengthStatsForSlice(ids[sliceAt:sliceAt+n], dbs, resChan, errChan)
+		remainingItems := itemsCount - sliceAt
+		if remainingRoutines <= remainingItems {
+			// Change how many items we give to routines:
+			n = int(math.Ceil(float64(remainingItems) / float64(remainingRoutines)))
+		}
+
+		remainingRoutines--
 	}
 
-	return nil, nil
+	// Process results
+	final := stats.NewArticleLengthStatResult()
+	select {
+	case result := <-resChan:
+		fmt.Printf("Result in: %v items; avg %v\n", len(result.Stats), result.Average)
+		final.Stats = append(final.Stats, result.Stats...)
+		// Might get stuck if one routine gets stuck as well
+		if len(final.Stats) == len(ids) {
+			break
+		}
+	case err := <-errChan:
+		return nil, err
+	}
+
+	// Compute stats:
+	final.ComputeAverage()
+
+	return final, nil
 }
 
 // Meant to be used as a goroutine
 func lengthStatsForSlice(
 	ids []uint,
 	dbs *db.DbSqlite,
-	resChan chan<- stats.ArticleLengthStatResult,
+	resChan chan<- *stats.ArticleLengthStatResult,
 	errChan chan<- error,
 ) {
-	res := stats.ArticleLengthStatResult{}
+	res := stats.NewArticleLengthStatResult()
 
 	for _, id := range ids {
 		content, err := dbs.ArticleContentById(id)
@@ -52,16 +78,7 @@ func lengthStatsForSlice(
 		res.PushStat(stat)
 	}
 
-	// Compute local average:
-	sum := 0
-	for _, wc := range res.Stats {
-		sum += wc.WordCount
-	}
-	// A non zero sum means we got at least 1 result
-	// So no divide by 0 is possible
-	if sum > 0 {
-		res.Average = float64(sum) / float64(len(res.Stats))
-	}
+	res.ComputeAverage()
 
 	resChan <- res
 }

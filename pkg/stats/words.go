@@ -1,7 +1,6 @@
 package stats
 
 import (
-	"fmt"
 	"regexp"
 	"strings"
 )
@@ -41,8 +40,6 @@ func WordCount(content *string) int {
 
 	// Remove consecutive spaces
 	res = strings.TrimSpace(consSpaceReg.ReplaceAllString(res, " "))
-
-	fmt.Printf("Cleaned up before word count:\n\n%s\n", res)
 
 	// Count spaces
 	return strings.Count(res, " ") + 1
