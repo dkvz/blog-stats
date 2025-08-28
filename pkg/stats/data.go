@@ -1,6 +1,7 @@
 package stats
 
 type ArticleLengthStat struct {
+	ArticleId uint
 	Length    int
 	WordCount int
 }

@@ -10,6 +10,6 @@ As always, doing useless things to learn. Although, aren't all the things we do 
 - [SQlite lib docs](https://practicalgobook.net/posts/go-sqlite-no-cgo/)
 
 ## TODO
-- [x] Use readonly or writeonly (?) channels when possible - I always forget about that
-- [ ] I also need the article ID for word count stats, helps debugging strange results
+- [x] Use readonly or writeonly channels when possible - I always forget about that
+- [x] I also need the article ID for word count stats, helps debugging strange results
 - [ ] Some outliers in terms of wc / length ratio can be eliminated from the formula 
