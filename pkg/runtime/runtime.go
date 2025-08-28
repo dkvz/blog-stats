@@ -70,11 +70,12 @@ func lengthStatsForSlice(
 		}
 
 		// Compute word count:
-		stat := &stats.ArticleLengthStat{
-			ArticleId: id,
-			WordCount: stats.WordCount(content),
-			Length:    len(*content),
-		}
+		// stat := &stats.ArticleLengthStat{
+		// 	ArticleId: id,
+		// 	WordCount: stats.WordCount(content),
+		// 	Length:    len(*content),
+		// }
+		stat := stats.NewArticleLengthStat(id, len(*content), stats.WordCount(content))
 		res.PushStat(stat)
 	}
 
