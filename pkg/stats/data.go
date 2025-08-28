@@ -29,9 +29,3 @@ func (alsr *ArticleLengthStatResult) ComputeAverage() {
 		alsr.Average = float64(sum) / float64(len(alsr.Stats))
 	}
 }
-
-func NewArticleLengthStatResult() *ArticleLengthStatResult {
-	return &ArticleLengthStatResult{
-		Stats: make([]ArticleLengthStat, 0),
-	}
-}

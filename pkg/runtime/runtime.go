@@ -36,7 +36,7 @@ func LengthStatsForIds(ids []uint, dbs *db.DbSqlite) (*stats.ArticleLengthStatRe
 
 	// Process results
 	// Might get stuck if one routine gets stuck as well
-	final := stats.NewArticleLengthStatResult()
+	final := &stats.ArticleLengthStatResult{}
 	for len(final.Stats) < len(ids) {
 		select {
 		case result := <-resChan:
@@ -60,7 +60,7 @@ func lengthStatsForSlice(
 	resChan chan<- *stats.ArticleLengthStatResult,
 	errChan chan<- error,
 ) {
-	res := stats.NewArticleLengthStatResult()
+	res := &stats.ArticleLengthStatResult{}
 
 	for _, id := range ids {
 		content, err := dbs.ArticleContentById(id)
