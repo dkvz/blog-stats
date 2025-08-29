@@ -8,15 +8,15 @@ type ArticleLengthStat struct {
 }
 
 type ArticleLengthStatResult struct {
-	Stats   []ArticleLengthStat
-	Average float64
+	Stats []ArticleLengthStat
 }
 
 type ArticleLengthAnalytics struct {
-	Min    float64
-	Max    float64
-	StdDev float64
-	Median float64
+	Min     float64
+	Max     float64
+	StdDev  float64
+	Median  float64
+	Average float64
 }
 
 // We never check if Stats is nil in any of these.
@@ -24,18 +24,6 @@ type ArticleLengthAnalytics struct {
 
 func (alsr *ArticleLengthStatResult) PushStat(s *ArticleLengthStat) {
 	alsr.Stats = append(alsr.Stats, *s)
-}
-
-func (alsr *ArticleLengthStatResult) ComputeAverage() {
-	sum := 0
-	for _, wc := range alsr.Stats {
-		sum += wc.WordCount()
-	}
-	// A non zero sum means we got at least 1 result
-	// So no divide by 0 is possible
-	if sum > 0 {
-		alsr.Average = float64(sum) / float64(len(alsr.Stats))
-	}
 }
 
 func NewArticleLengthStat(

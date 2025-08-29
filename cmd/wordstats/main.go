@@ -63,7 +63,6 @@ func runModePlot(dbs *db.DbSqlite) {
 		panic(err)
 	}
 
-	fmt.Printf("Final average: %v\n", results.Average)
 	fmt.Printf("\nID\tWC\tLength\tRatio\n")
 	for _, wc := range results.Stats {
 		fmt.Printf(

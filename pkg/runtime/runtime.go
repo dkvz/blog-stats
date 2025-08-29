@@ -40,15 +40,12 @@ func LengthStatsForIds(ids []uint, dbs *db.DbSqlite) (*stats.ArticleLengthStatRe
 	for len(final.Stats) < len(ids) {
 		select {
 		case result := <-resChan:
-			fmt.Printf("Result in: %v items; avg %v\n", len(result.Stats), result.Average)
+			fmt.Printf("Result in: %v items\n", len(result.Stats))
 			final.Stats = append(final.Stats, result.Stats...)
 		case err := <-errChan:
 			return nil, err
 		}
 	}
-
-	// Compute stats:
-	final.ComputeAverage()
 
 	return final, nil
 }
@@ -79,7 +76,9 @@ func lengthStatsForSlice(
 		res.PushStat(stat)
 	}
 
-	res.ComputeAverage()
+	// Thought of calculating local averages here to merge
+	// them later but I need other averages and I also need
+	// those for the std dev caculation.
 
 	resChan <- res
 }
