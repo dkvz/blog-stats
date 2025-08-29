@@ -7,10 +7,10 @@ import (
 
 // Computes various stats values from the give slice
 // Also returns a new slice with values sorted in ascending order
-func ComputeStatsAndSort(data []float64) (*ArticleLengthAnalytics, []float64) {
+func ComputeStatsAndSort(data []float64) (*SliceAnalytics, []float64) {
 	dataLen := len(data)
 	if dataLen == 0 {
-		return &ArticleLengthAnalytics{}, nil
+		return &SliceAnalytics{}, nil
 	}
 
 	dataCopy := make([]float64, dataLen)
@@ -38,7 +38,7 @@ func ComputeStatsAndSort(data []float64) (*ArticleLengthAnalytics, []float64) {
 		median = dataCopy[dataLen/2]
 	}
 
-	ret := &ArticleLengthAnalytics{
+	ret := &SliceAnalytics{
 		Min:     dataCopy[0],
 		Max:     dataCopy[dataLen-1],
 		Median:  median,

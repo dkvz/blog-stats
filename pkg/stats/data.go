@@ -11,7 +11,7 @@ type ArticleLengthStatResult struct {
 	Stats []ArticleLengthStat
 }
 
-type ArticleLengthAnalytics struct {
+type SliceAnalytics struct {
 	Min     float64
 	Max     float64
 	StdDev  float64
