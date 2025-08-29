@@ -3,11 +3,13 @@ package main
 import (
 	"flag"
 	"fmt"
+	"sort"
 	"strings"
 
 	"github.com/dkvz/blog-stats/pkg/cli"
 	"github.com/dkvz/blog-stats/pkg/db"
 	"github.com/dkvz/blog-stats/pkg/runtime"
+	"github.com/dkvz/blog-stats/pkg/stats"
 )
 
 func main() {
@@ -62,6 +64,20 @@ func runModePlot(dbs *db.DbSqlite) {
 		fmt.Println("error in the subroutines")
 		panic(err)
 	}
+
+	// I'll be sorting things multiple times but that's fine
+	sort.Slice(results.Stats, func(i, j int) bool {
+		return results.Stats[i].WordsPerCharRatio() < results.Stats[j].WordsPerCharRatio()
+	})
+
+	// Create a slice with the ratios to compute stats:
+	ratios := make([]float64, len(results.Stats))
+	for i, r := range results.Stats {
+		ratios[i] = r.WordsPerCharRatio()
+	}
+	stats := stats.ComputeStats(ratios)
+
+	// TODO: Implement String() for SliceAnalytics
 
 	fmt.Printf("\nID\tWC\tLength\tRatio\n")
 	for _, wc := range results.Stats {

@@ -13,14 +13,14 @@ func TestSliceAnalytics(t *testing.T) {
 		Median:  168.05,
 	}
 
-	stats, sorted := ComputeStatsAndSort(testSlice)
+	stats := ComputeStats(testSlice)
 	if stats.Average != expected.Average {
 		t.Errorf("TestSliceAnalytics: wrong average %v instead of %v", stats.Average, expected.Average)
 	}
 	if stats.Min != expected.Min {
 		t.Errorf("TestSliceAnalytics: wrong min %v instead of %v", stats.Min, expected.Min)
 	}
-	if stats.Max != expected.Max || sorted[len(sorted)-1] != expected.Max {
+	if stats.Max != expected.Max {
 		t.Errorf("TestSliceAnalytics: wrong max %v instead of %v", stats.Max, expected.Max)
 	}
 	if stats.Median != expected.Median {

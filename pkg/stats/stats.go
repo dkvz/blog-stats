@@ -7,10 +7,10 @@ import (
 
 // Computes various stats values from the give slice
 // Also returns a new slice with values sorted in ascending order
-func ComputeStatsAndSort(data []float64) (*SliceAnalytics, []float64) {
+func ComputeStats(data []float64) *SliceAnalytics {
 	dataLen := len(data)
 	if dataLen == 0 {
-		return &SliceAnalytics{}, nil
+		return &SliceAnalytics{}
 	}
 
 	dataCopy := make([]float64, dataLen)
@@ -46,7 +46,7 @@ func ComputeStatsAndSort(data []float64) (*SliceAnalytics, []float64) {
 		StdDev:  stdDev,
 	}
 
-	return ret, dataCopy
+	return ret
 }
 
 func ComputeAverage(data []float64) float64 {
