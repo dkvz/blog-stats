@@ -12,6 +12,13 @@ type ArticleLengthStatResult struct {
 	Average float64
 }
 
+type ArticleLengthAnalytics struct {
+	Min    float64
+	Max    float64
+	StdDev float64
+	Median float64
+}
+
 // We never check if Stats is nil in any of these.
 // Feels like my Java days are back.
 
