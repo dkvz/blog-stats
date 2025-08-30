@@ -1,5 +1,7 @@
 package stats
 
+import "fmt"
+
 type ArticleLengthStat struct {
 	ArticleId         uint
 	length            int
@@ -17,6 +19,17 @@ type SliceAnalytics struct {
 	StdDev  float64
 	Median  float64
 	Average float64
+}
+
+func (sl *SliceAnalytics) String() string {
+	return fmt.Sprintf(
+		"Avg: %f\tMin: %f\tMax: %f\nStdDev: %f\tMed: %f",
+		sl.Average,
+		sl.Min,
+		sl.Max,
+		sl.StdDev,
+		sl.Median,
+	)
 }
 
 // We never check if Stats is nil in any of these.

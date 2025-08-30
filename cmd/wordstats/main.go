@@ -77,7 +77,7 @@ func runModePlot(dbs *db.DbSqlite) {
 	}
 	stats := stats.ComputeStats(ratios)
 
-	// TODO: Implement String() for SliceAnalytics
+	fmt.Printf("\nRatio stats:\n%s\n\n", stats)
 
 	fmt.Printf("\nID\tWC\tLength\tRatio\n")
 	for _, wc := range results.Stats {

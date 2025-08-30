@@ -1,7 +1,6 @@
 package runtime
 
 import (
-	"fmt"
 	"math"
 	"runtime"
 
@@ -23,7 +22,6 @@ func LengthStatsForIds(ids []uint, dbs *db.DbSqlite) (*stats.ArticleLengthStatRe
 
 	for sliceAt := 0; remainingRoutines > 0; sliceAt += n {
 		// Start the goroutines
-		fmt.Printf("Routine starting at %v up to %v included\n", sliceAt, sliceAt+n)
 		go lengthStatsForSlice(ids[sliceAt:sliceAt+n], dbs, resChan, errChan)
 		remainingItems := itemsCount - sliceAt
 		if remainingRoutines <= remainingItems {
@@ -40,7 +38,6 @@ func LengthStatsForIds(ids []uint, dbs *db.DbSqlite) (*stats.ArticleLengthStatRe
 	for len(final.Stats) < len(ids) {
 		select {
 		case result := <-resChan:
-			fmt.Printf("Result in: %v items\n", len(result.Stats))
 			final.Stats = append(final.Stats, result.Stats...)
 		case err := <-errChan:
 			return nil, err
