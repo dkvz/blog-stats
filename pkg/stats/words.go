@@ -37,9 +37,11 @@ func WordCount(content *string) int {
 	// We can keep blockquote contents
 	res := paReg.ReplaceAllString(*content, "")
 	res = comsReg.ReplaceAllString(res, "")
+	// fmt.Printf("After pa and coms tags regexes:\n%v", res)
 	res = tagsReg.ReplaceAllString(res, "")
 
 	res = simpleTagsReg.ReplaceAllString(res, "")
+	// fmt.Printf("After simple tags regex:\n%v", res)
 
 	res = strings.ReplaceAll(res, "\n", " ")
 	res = strings.ReplaceAll(res, "&nbsp;", " ")
