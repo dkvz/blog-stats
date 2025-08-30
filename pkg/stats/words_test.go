@@ -36,10 +36,10 @@ func TestBigTag(t *testing.T) {
 
 	<div class="card-panel z-depth-3 article-image center-image" style="max-width: 1000px">
 <a href="/wp-content/blog.png" target="_blank"><img src="/wp-content/blog.png" alt="Some image" class="responsive-img"></a>
-<div class="image-legend">Image legends are currently not counted in</div>
+<div class="image-legend">Image legends are currently well counted in</div>
 </div>`
 
-	want := 8
+	want := 15
 	wc := WordCount(&sut)
 	if wc != want {
 		t.Errorf("TestBigTag: count is %v, should be %v", wc, want)
@@ -105,17 +105,17 @@ func TestImgAtBothEnds(t *testing.T) {
 	sut := `<h1>Title</h1>
 	<div class="card-panel z-depth-3 article-image center-image" style="max-width: 1000px">
 	<a href="/wp-content/blog.png" target="_blank"><img src="/wp-content/blog.png" alt="Some image" class="responsive-img"></a>
-	<div class="image-legend">Image legends are currently not counted in</div>
+	<div class="image-legend">Image legends are currently well counted in</div>
 	</div>
 	<p>Article text</p>
 	<p>Article text again</p>
 	<div class="card-panel z-depth-3 article-image center-image" style="max-width: 1000px">
 	<a href="/wp-content/blog.png" target="_blank"><img src="/wp-content/blog.png" alt="Some image" class="responsive-img"></a>
-	<div class="image-legend">Image legends are currently not counted in</div>
+	<div class="image-legend">Image legends are currently well counted in</div>
 	</div>
 	`
 
-	want := 6
+	want := 20
 	wc := WordCount(&sut)
 	if wc != want {
 		t.Errorf("TestImgAtBothEnds: count is %v, should be %v", wc, want)

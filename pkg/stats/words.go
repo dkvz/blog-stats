@@ -1,9 +1,14 @@
 package stats
 
 import (
+	"fmt"
 	"regexp"
 	"strings"
 )
+
+// Extract image legends to put them at the end (so they
+// don't get matched by the following regexes):
+var legendReg = regexp.MustCompile(`(?U)<[a-zA-Z-]+\s+class=.?image-legend.?>([^<]*)</[a-zA-Z-]+>`)
 
 // Identify tags fr which we have to keep the inner content
 // I certainly missed a whole bunch of these
@@ -30,12 +35,16 @@ var simpleTagsReg = regexp.MustCompile(`<[^>]*>`)
 var consSpaceReg = regexp.MustCompile(`\s{2,}`)
 
 func WordCount(content *string) int {
-	// Remove all <p> and </p>
-	// Remove all <a href="sdfksd" whatever> and </a>
-	// Remove img and svg, some tags may not have closing element
-	// Remove most tags and their inner content
-	// We can keep blockquote contents
-	res := paReg.ReplaceAllString(*content, "")
+	// Extract image legends to re-insert them later
+	legendMatches := legendReg.FindAllStringSubmatch(*content, -1)
+	legends := "\n"
+	for _, m := range legendMatches {
+		legends += fmt.Sprintf("%s\n", m[1])
+	}
+
+	res := *content + legends
+	res = paReg.ReplaceAllString(res, "")
+
 	res = comsReg.ReplaceAllString(res, "")
 	// fmt.Printf("After pa and coms tags regexes:\n%v", res)
 	res = tagsReg.ReplaceAllString(res, "")
