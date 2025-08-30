@@ -21,7 +21,7 @@ var comsReg = regexp.MustCompile(`(?sU)<!--.*-->`)
 // Will also destroy image legends but I can live with that
 // var tagsReg = regexp.MustCompile(`(?s)<[^>]*>[^>]*<[^>]*>`)
 // s flag was needed for "." to also match line feeds
-var tagsReg = regexp.MustCompile(`(?s)<[^>]*>.*<[^>]*>`)
+var tagsReg = regexp.MustCompile(`(?sU)<[^>]*>[^<]*</[^>]*>`)
 
 // A bit redundant but the previous regex does not match
 // single or self-closing tags
