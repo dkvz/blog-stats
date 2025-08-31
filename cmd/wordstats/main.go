@@ -70,13 +70,28 @@ func runModePlot(dbs *db.DbSqlite) {
 		return results.Stats[i].WordsPerCharRatio() < results.Stats[j].WordsPerCharRatio()
 	})
 
+	// Compute word count stats:
+	wcStats := make([]float64, len(results.Stats))
+	for i, r := range results.Stats {
+		wcStats[i] = float64(r.WordCount())
+	}
+	wcStatsC := stats.ComputeStats(wcStats)
+	fmt.Printf("\nWord count stats:\n%s\n\n", wcStatsC)
+
+	// Compute length stats:
+	lengthStats := make([]float64, len(results.Stats))
+	for i, r := range results.Stats {
+		lengthStats[i] = float64(r.Length())
+	}
+	lengthStatsC := stats.ComputeStats(lengthStats)
+	fmt.Printf("\nArticle length stats:\n%s\n\n", lengthStatsC)
+
 	// Create a slice with the ratios to compute stats:
 	ratios := make([]float64, len(results.Stats))
 	for i, r := range results.Stats {
 		ratios[i] = r.WordsPerCharRatio()
 	}
 	stats := stats.ComputeStats(ratios)
-
 	fmt.Printf("\nRatio stats:\n%s\n\n", stats)
 
 	fmt.Printf("\nID\tWC\tLength\tRatio\n")
