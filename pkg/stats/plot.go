@@ -30,8 +30,10 @@ func GenerateScatterPlot(data map[float64]float64, title string) components.Char
 		})
 	}
 
-	scatter.AddSeries("data", chartData).
+	// Empty series title removes the series legend
+	scatter.AddSeries("", chartData).
 		SetSeriesOptions(charts.WithLabelOpts(
+			// These labels are next to every points when enabled
 			opts.Label{
 				Show: opts.Bool(false),
 			}))
