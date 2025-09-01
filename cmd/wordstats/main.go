@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"net/http"
 	"sort"
 	"strings"
 
@@ -91,8 +92,8 @@ func runModePlot(dbs *db.DbSqlite) {
 	for i, r := range results.Stats {
 		ratios[i] = r.WordsPerCharRatio()
 	}
-	stats := stats.ComputeStats(ratios)
-	fmt.Printf("\nRatio stats:\n%s\n\n", stats)
+	ratioStats := stats.ComputeStats(ratios)
+	fmt.Printf("\nRatio stats:\n%s\n\n", ratioStats)
 
 	fmt.Printf("\nID\tWC\tLength\tRatio\n")
 	for _, wc := range results.Stats {
@@ -104,5 +105,17 @@ func runModePlot(dbs *db.DbSqlite) {
 			wc.WordsPerCharRatio(),
 		)
 	}
+
+	// Create the map to create the plot
+	lengthToRatio := make(map[float64]float64, len(ratios))
+	for i, l := range lengthStats {
+		lengthToRatio[l] = ratios[i]
+	}
+
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		stats.GenerateScatterPlot(lengthToRatio, "Word Count per Length Ratio as function of Length", w)
+	})
+	fmt.Println("\nStarted HTTP server on port 8080...")
+	http.ListenAndServe(":8080", nil)
 
 }
