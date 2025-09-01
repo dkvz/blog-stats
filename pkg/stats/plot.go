@@ -4,6 +4,7 @@ import (
 	"io"
 
 	"github.com/go-echarts/go-echarts/v2/charts"
+	"github.com/go-echarts/go-echarts/v2/components"
 	"github.com/go-echarts/go-echarts/v2/opts"
 )
 
@@ -14,7 +15,7 @@ import (
 // And the runtime decides whether to generate
 // images or run a local HTTP server.
 
-func GenerateScatterPlot(data map[float64]float64, title string, w io.Writer) {
+func GenerateScatterPlot(data map[float64]float64, title string) components.Charter {
 	scatter := charts.NewScatter()
 
 	scatter.SetGlobalOptions(charts.WithTitleOpts(opts.Title{
@@ -35,5 +36,11 @@ func GenerateScatterPlot(data map[float64]float64, title string, w io.Writer) {
 				Show: opts.Bool(false),
 			}))
 
-	scatter.Render(w)
+	return scatter
+}
+
+func GeneratePlotPage(w io.Writer, charts ...components.Charter) {
+	page := components.NewPage()
+	page.AddCharts(charts...)
+	page.Render(w)
 }

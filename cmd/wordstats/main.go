@@ -108,12 +108,16 @@ func runModePlot(dbs *db.DbSqlite) {
 
 	// Create the map to create the plot
 	lengthToRatio := make(map[float64]float64, len(ratios))
+	lengthToWC := make(map[float64]float64, len(wcStats))
 	for i, l := range lengthStats {
 		lengthToRatio[l] = ratios[i]
+		lengthToWC[l] = wcStats[i]
 	}
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		stats.GenerateScatterPlot(lengthToRatio, "Word Count per Length Ratio as function of Length", w)
+		lToR := stats.GenerateScatterPlot(lengthToRatio, "Word Count per Length Ratio as function of Length")
+		lToWC := stats.GenerateScatterPlot(lengthToWC, "Word Count per length")
+		stats.GeneratePlotPage(w, lToR, lToWC)
 	})
 	fmt.Println("\nStarted HTTP server on port 8080...")
 	http.ListenAndServe(":8080", nil)
