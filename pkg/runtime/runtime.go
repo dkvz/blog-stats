@@ -63,13 +63,11 @@ func lengthStatsForSlice(
 			continue
 		}
 
-		// Compute word count:
-		// stat := &stats.ArticleLengthStat{
-		// 	ArticleId: id,
-		// 	WordCount: stats.WordCount(content),
-		// 	Length:    len(*content),
-		// }
-		stat := stats.NewArticleLengthStat(id, len(*content), stats.WordCount(content))
+		// The length to use has to be calculated after UTF-16
+		// conversion because JS uses UTF-16 and the factors are
+		// to be ultimately used in JS.
+		contentLength := stats.LengthUTF16(content)
+		stat := stats.NewArticleLengthStat(id, contentLength, stats.WordCount(content))
 		res.PushStat(stat)
 	}
 

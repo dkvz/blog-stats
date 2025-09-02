@@ -15,7 +15,7 @@ As always, doing useless things to learn. Although, aren't all the things we do 
     - Include the legends in the word count
 
 ## TODO
-- [ ] ID 114 appears twice in my results that seems like a bug
+- [ ] Don't forget to use the special length function from words.go for computing UTF-16 equivalent string length that JS uses
 - [x] Use readonly or writeonly channels when possible - I always forget about that
 - [x] I also need the article ID for word count stats, helps debugging strange results
 - [x] I need to test word count with HTML comments at the start
