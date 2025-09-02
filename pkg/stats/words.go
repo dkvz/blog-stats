@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"regexp"
 	"strings"
+	"unicode/utf16"
 )
 
 // Extract image legends to put them at the end (so they
@@ -60,4 +61,14 @@ func WordCount(content *string) int {
 
 	// Count spaces
 	return strings.Count(res, " ") + 1
+}
+
+// Get the length of the string in UTF-16, which is what JS reports
+// with the .length property.
+func LengthUTF16(content *string) int {
+	if content == nil {
+		return 0
+	}
+	utf16Bytes := utf16.Encode([]rune(*content))
+	return len(utf16Bytes)
 }

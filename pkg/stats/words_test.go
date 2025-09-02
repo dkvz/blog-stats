@@ -121,3 +121,13 @@ func TestImgAtBothEnds(t *testing.T) {
 		t.Errorf("TestImgAtBothEnds: count is %v, should be %v", wc, want)
 	}
 }
+
+func TestUTF16StringLength(t *testing.T) {
+	sut := "testing çà 😌"
+	u16Length := LengthUTF16(&sut)
+
+	expected := 13
+	if u16Length != expected {
+		t.Errorf("TestUTF16StringLength: length was %v instead of %v", u16Length, expected)
+	}
+}
