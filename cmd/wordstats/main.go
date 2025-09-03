@@ -25,15 +25,31 @@ func main() {
 	}
 
 	// Parse the current mode from CLI args
-	mode := flag.String("mode", "", "plot | factors | verify")
+	// TODO: I should use subflags for some of these that have no
+	// sense in verify mode.
+	mode := flag.String("mode", "", "plot | verify")
+
 	ignoreIds := flag.String(
 		"ignore-ids",
 		"",
 		"comma separated list of article IDs to ignore in computations",
 	)
-	flag.Parse()
-	*mode = strings.TrimSpace(strings.ToLower(*mode))
+	startLength := flag.Uint("start-length",
+		0,
+		"only include articles with length higher or equal to this value",
+	)
+	endLength := flag.Uint("end-length",
+		0,
+		"only include articles with length lower than this value",
+	)
 
+	flag.Parse()
+
+	if *startLength >= *endLength {
+		fmt.Println("start-length should be smaller than end-length")
+		return
+	}
+	*mode = strings.TrimSpace(strings.ToLower(*mode))
 	ignoredIds := cli.ParseIdsList(*ignoreIds)
 
 	iMode := 0

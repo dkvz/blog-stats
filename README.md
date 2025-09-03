@@ -16,6 +16,7 @@ Right now I manually save the factors or formulas to be used for the word count 
 - [Go-echarts online doc and examples](https://go-echarts.github.io/)
 
 ## TODO
+- [ ] Plot mode should probably be called "analyse" at this point
 - [x] Use readonly or writeonly channels when possible - I always forget about that
 - [x] I also need the article ID for word count stats, helps debugging strange results
 - [x] I need to test word count with HTML comments at the start
