@@ -35,11 +35,11 @@ func ParseCliArgs() (*CliArgs, error) {
 
 	flag.Parse()
 
-	if *startLength >= *endLength {
+	if (*startLength != 0 && *endLength != 0) && *startLength >= *endLength {
 		return nil, errors.New("start-length should be smaller than end-length")
 	}
 	*mode = strings.TrimSpace(strings.ToLower(*mode))
-	ignoredIds := ParseIdsList(*ignoreIds)
+	ignoredIds := parseIdsList(*ignoreIds)
 
 	iMode := 0
 
@@ -63,7 +63,7 @@ func ParseCliArgs() (*CliArgs, error) {
 	}, nil
 }
 
-func ParseIdsList(arg string) []uint {
+func parseIdsList(arg string) []uint {
 	var ret []uint
 
 	for v := range strings.SplitSeq(arg, ",") {

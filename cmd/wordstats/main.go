@@ -4,7 +4,6 @@ import (
 	"flag"
 	"fmt"
 	"net/http"
-	"slices"
 	"sort"
 
 	"github.com/dkvz/blog-stats/pkg/cli"
@@ -28,6 +27,7 @@ func main() {
 	if err != nil {
 		fmt.Println(err.Error())
 		flag.Usage()
+		return
 	}
 
 	dbs, err := db.NewDBSqlite(config.DbPath)
@@ -37,31 +37,18 @@ func main() {
 	}
 
 	if cliArgs.Mode == 0 {
-		runModePlot(dbs, cliArgs.IgnoredIds)
+		runModePlot(dbs, cliArgs)
 	}
 }
 
-func runModePlot(dbs *db.DbSqlite, ignoredIds []uint) {
+func runModePlot(dbs *db.DbSqlite, cliArgs *cli.CliArgs) {
 	ids, err := dbs.AllPublishedArticleIds()
 	if err != nil {
 		fmt.Println("encountered DB error getting article ids")
 		panic(err)
 	}
 
-	// Not sure if deleting from a slice is faster than just
-	// creating a new one. My intuition is that it's not.
-	// If it was important I'd check with a benchmark.
-	if len(ignoredIds) > 0 {
-		var newIds []uint
-		for _, i := range ids {
-			if !slices.Contains(ignoredIds, i) {
-				newIds = append(newIds, i)
-			}
-		}
-		ids = newIds
-	}
-
-	results, err := runtime.LengthStatsForIds(ids, dbs)
+	results, err := runtime.LengthStatsForIds(ids, dbs, cliArgs)
 	if err != nil {
 		fmt.Println("error in the subroutines")
 		panic(err)
