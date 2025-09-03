@@ -6,7 +6,6 @@ import (
 	"net/http"
 	"slices"
 	"sort"
-	"strings"
 
 	"github.com/dkvz/blog-stats/pkg/cli"
 	"github.com/dkvz/blog-stats/pkg/db"
@@ -25,46 +24,10 @@ func main() {
 	}
 
 	// Parse the current mode from CLI args
-	// TODO: I should use subflags for some of these that have no
-	// sense in verify mode.
-	mode := flag.String("mode", "", "plot | verify")
-
-	ignoreIds := flag.String(
-		"ignore-ids",
-		"",
-		"comma separated list of article IDs to ignore in computations",
-	)
-	startLength := flag.Uint("start-length",
-		0,
-		"only include articles with length higher or equal to this value",
-	)
-	endLength := flag.Uint("end-length",
-		0,
-		"only include articles with length lower than this value",
-	)
-
-	flag.Parse()
-
-	if *startLength >= *endLength {
-		fmt.Println("start-length should be smaller than end-length")
-		return
-	}
-	*mode = strings.TrimSpace(strings.ToLower(*mode))
-	ignoredIds := cli.ParseIdsList(*ignoreIds)
-
-	iMode := 0
-
-	// My Java past is making me nervous when I don't check for nil
-	// values on these pointers but the default val above should
-	// make it so they're never nil
-	switch *mode {
-	case "plot":
-		iMode = 0
-	case "verify":
-		iMode = 1
-	default:
+	cliArgs, err := cli.ParseCliArgs()
+	if err != nil {
+		fmt.Println(err.Error())
 		flag.Usage()
-		return
 	}
 
 	dbs, err := db.NewDBSqlite(config.DbPath)
@@ -73,8 +36,8 @@ func main() {
 		panic(err)
 	}
 
-	if iMode == 0 {
-		runModePlot(dbs, ignoredIds)
+	if cliArgs.Mode == 0 {
+		runModePlot(dbs, cliArgs.IgnoredIds)
 	}
 }
 
