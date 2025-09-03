@@ -6,16 +6,16 @@ I started this project to try and find a relation between the word count of my a
 
 As always, doing useless things to learn. Although, aren't all the things we do useless to the course of time and the universe?
 
+## How I use this thing
+TODO
+
+Right now I manually save the factors or formulas to be used for the word count prediction. Would be nice the have some official "last state of things" with a special format that can be tested against the current DB for the quality of predictions.
+
 ## References
 - [SQlite lib docs](https://practicalgobook.net/posts/go-sqlite-no-cgo/)
-
-## Problems
-- The ratio is too outlandish when there are too many images in the content, because we use the length with everything in it and the word count with all of the HTML cleaned up.
-    - Consider removing image divs from the length both in here and on the JS client
-    - Include the legends in the word count
+- [Go-echarts online doc and examples](https://go-echarts.github.io/)
 
 ## TODO
-- [ ] Don't forget to use the special length function from words.go for computing UTF-16 equivalent string length that JS uses
 - [x] Use readonly or writeonly channels when possible - I always forget about that
 - [x] I also need the article ID for word count stats, helps debugging strange results
 - [x] I need to test word count with HTML comments at the start

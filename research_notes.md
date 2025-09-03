@@ -35,6 +35,14 @@ StdDev: 0.023649        Med: 0.122434
 ## Outliers
 Should probably remove them from the calculation with command line params or the .env.
 
+I added the `-ignore-ids` param for that purpose.
+
+The largest length outliers are:
+- 107
+- 141
+
+ignoring them makes it easier to see the rest of the data.
+
 ## Computed length was wrong
 I forgot that JavaScript uses UTF-16 whereas the Go program uses UTF-8 for everything.
 
@@ -77,3 +85,10 @@ StdDev: 0.024052        Med: 0.124370
 ```
 
 The StdDev increased a bit and the length decreased globally.
+
+## Factor ranges candidates
+I'll start with just two:
+
+- Below length 2000
+- After that
+

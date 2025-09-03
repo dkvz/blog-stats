@@ -18,9 +18,15 @@ import (
 func GenerateScatterPlot(data map[float64]float64, title string) components.Charter {
 	scatter := charts.NewScatter()
 
-	scatter.SetGlobalOptions(charts.WithTitleOpts(opts.Title{
-		Title: title,
-	}))
+	scatter.SetGlobalOptions(
+		charts.WithTitleOpts(opts.Title{
+			Title: title,
+		}),
+		charts.WithDataZoomOpts(opts.DataZoom{
+			Start: 0,
+			End:   100,
+		}),
+	)
 
 	chartData := make([]opts.ScatterData, 0, len(data))
 	for x, y := range data {
