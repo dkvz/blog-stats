@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"net/http"
+	"slices"
 	"sort"
 	"strings"
 
@@ -25,18 +26,26 @@ func main() {
 
 	// Parse the current mode from CLI args
 	mode := flag.String("mode", "", "plot | factors | verify")
+	ignoreIds := flag.String(
+		"ignore-ids",
+		"",
+		"comma separated list of article IDs to ignore in computations",
+	)
 	flag.Parse()
 	*mode = strings.TrimSpace(strings.ToLower(*mode))
 
+	ignoredIds := cli.ParseIdsList(*ignoreIds)
+
 	iMode := 0
 
+	// My Java past is making me nervous when I don't check for nil
+	// values on these pointers but the default val above should
+	// make it so they're never nil
 	switch *mode {
 	case "plot":
 		iMode = 0
-	case "factors":
-		iMode = 1
 	case "verify":
-		iMode = 2
+		iMode = 1
 	default:
 		flag.Usage()
 		return
@@ -49,15 +58,28 @@ func main() {
 	}
 
 	if iMode == 0 {
-		runModePlot(dbs)
+		runModePlot(dbs, ignoredIds)
 	}
 }
 
-func runModePlot(dbs *db.DbSqlite) {
+func runModePlot(dbs *db.DbSqlite, ignoredIds []uint) {
 	ids, err := dbs.AllPublishedArticleIds()
 	if err != nil {
 		fmt.Println("encountered DB error getting article ids")
 		panic(err)
+	}
+
+	// Not sure if deleting from a slice is faster than just
+	// creating a new one. My intuition is that it's not.
+	// If it was important I'd check with a benchmark.
+	if len(ignoredIds) > 0 {
+		var newIds []uint
+		for _, i := range ids {
+			if !slices.Contains(ignoredIds, i) {
+				newIds = append(newIds, i)
+			}
+		}
+		ids = newIds
 	}
 
 	results, err := runtime.LengthStatsForIds(ids, dbs)
