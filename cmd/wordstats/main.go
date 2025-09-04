@@ -48,7 +48,13 @@ func runModePlot(dbs *db.DbSqlite, cliArgs *cli.CliArgs) {
 		panic(err)
 	}
 
-	results, err := runtime.LengthStatsForIds(ids, dbs, cliArgs)
+	lengthArgs := &runtime.LengthStatsOpts{
+		IgnoredIds:  cliArgs.IgnoredIds,
+		StartLength: int(cliArgs.StartLength),
+		EndLength:   int(cliArgs.EndLength),
+	}
+
+	results, err := runtime.LengthStatsForIds(ids, dbs, lengthArgs)
 	if err != nil {
 		fmt.Println("error in the subroutines")
 		panic(err)

@@ -5,12 +5,17 @@ import (
 	"runtime"
 	"slices"
 
-	"github.com/dkvz/blog-stats/pkg/cli"
 	"github.com/dkvz/blog-stats/pkg/db"
 	"github.com/dkvz/blog-stats/pkg/stats"
 )
 
-func LengthStatsForIds(ids []uint, dbs *db.DbSqlite, cliArgs *cli.CliArgs) (*stats.ArticleLengthStatResult, error) {
+type LengthStatsOpts struct {
+	IgnoredIds  []uint
+	StartLength int
+	EndLength   int
+}
+
+func LengthStatsForIds(ids []uint, dbs *db.DbSqlite, args *LengthStatsOpts) (*stats.ArticleLengthStatResult, error) {
 	// TODO: Having one item per routine is certainly ineffective and
 	// we should lower the thread count further than that.
 	routinesCount := min(len(ids), runtime.NumCPU())
@@ -18,32 +23,37 @@ func LengthStatsForIds(ids []uint, dbs *db.DbSqlite, cliArgs *cli.CliArgs) (*sta
 	resChan := make(chan *stats.ArticleLengthStatResult)
 	errChan := make(chan error)
 
+	var intSLength int
+	var intELength int
+
 	// Not sure if deleting from a slice is faster than just
 	// creating a new one. My intuition is that it's not.
 	// If it was important I'd check with a benchmark.
-	if cliArgs != nil && len(cliArgs.IgnoredIds) > 0 {
-		var newIds []uint
-		for _, i := range ids {
-			if !slices.Contains(cliArgs.IgnoredIds, i) {
-				newIds = append(newIds, i)
+	if args != nil {
+		intSLength = args.StartLength
+		intELength = args.EndLength
+		if len(args.IgnoredIds) > 0 {
+			var newIds []uint
+			for _, i := range ids {
+				if !slices.Contains(args.IgnoredIds, i) {
+					newIds = append(newIds, i)
+				}
 			}
+			ids = newIds
 		}
-		ids = newIds
 	}
 
 	itemsCount := len(ids)
 	n := int(math.Ceil(float64(itemsCount) / float64(routinesCount)))
 	remainingRoutines := routinesCount
-	intSLength := int(cliArgs.StartLength)
-	intELength := int(cliArgs.EndLength)
 
 	for sliceAt := 0; remainingRoutines > 0; sliceAt += n {
 		// Start the goroutines
 		go lengthStatsForSlice(
 			ids[sliceAt:sliceAt+n],
 			dbs,
-			int(intSLength),
-			int(intELength),
+			intSLength,
+			intELength,
 			resChan,
 			errChan,
 		)
