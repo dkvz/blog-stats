@@ -34,6 +34,15 @@ type CliArgs struct {
 	VerifyModeArgs *VerifyArgs
 }
 
+func ParseFactor(f string) (*Factor, error) {
+	vals := strings.Split(f, ",")
+	if len(vals) != 3 {
+		return nil, errors.New("missing parameters in factor, 3 values expected")
+	}
+
+	return nil, nil
+}
+
 // Custom flag type backed by a simple slice of strings
 // We'll be able to provide that arg multiple time
 // Feel like this should exist in the lib
@@ -137,5 +146,11 @@ func validateVerifyModeArgs(
 	factors multiArg,
 	reg string,
 ) (*VerifyArgs, error) {
+	// If defaultFactor is > 0, use factor mode
+	// (default) and check if we have factors and
+	// if they're all valid
+
+	// Otherwise check if reg can be parsed
+	// If not, return missing argument error
 	return nil, nil
 }
