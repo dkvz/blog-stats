@@ -3,15 +3,49 @@ package cli
 import (
 	"errors"
 	"flag"
+	"fmt"
 	"strconv"
 	"strings"
 )
 
+type Factor struct {
+	Value float64
+	Start int
+	End   int
+}
+
+type VerifyArgs struct {
+	// Either the default factor to use or the
+	// coefficient for the line equation ("b" as
+	// in y=a+bx)
+	DefaultFactor float64
+	// Means we're using linear regression when true
+	// Also implies the default mode is using factors
+	RegMode bool
+	Factors []Factor
+	RegA    float64
+}
+
 type CliArgs struct {
-	Mode        int
-	IgnoredIds  []uint
-	StartLength uint
-	EndLength   uint
+	Mode           int
+	IgnoredIds     []uint
+	StartLength    uint
+	EndLength      uint
+	VerifyModeArgs *VerifyArgs
+}
+
+// Custom flag type backed by a simple slice of strings
+// We'll be able to provide that arg multiple time
+// Feel like this should exist in the lib
+type multiArg []string
+
+func (m *multiArg) String() string {
+	return fmt.Sprintf("%v", *m)
+}
+
+func (m *multiArg) Set(v string) error {
+	*m = append(*m, v)
+	return nil
 }
 
 func ParseCliArgs() (*CliArgs, error) {
@@ -32,6 +66,15 @@ func ParseCliArgs() (*CliArgs, error) {
 		0,
 		"only include articles with length lower than this value",
 	)
+	defaultFactor := flag.Float64("default-factor", 0.0, "default or only factor to use for the most simple linear prediction model WordCount=(factor x length)")
+	reg := flag.String("reg", "", "comma separated linear regression params b,a as in y=a+bx (b is the coefficient)")
+	// The factor option can be used multiple times
+	var factors multiArg
+	flag.Var(
+		&factors,
+		"factor",
+		"comma separated values in format factor,range-start,range-end (ranges of article lengths) can be used multiple times - Requires the default-factor option to be present as well",
+	)
 
 	flag.Parse()
 
@@ -42,6 +85,7 @@ func ParseCliArgs() (*CliArgs, error) {
 	ignoredIds := parseIdsList(*ignoreIds)
 
 	iMode := 0
+	var verifyModeArgs *VerifyArgs
 
 	// My Java past is making me nervous when I don't check for nil
 	// values on these pointers but the default val above should
@@ -50,16 +94,25 @@ func ParseCliArgs() (*CliArgs, error) {
 	case "plot":
 		iMode = 0
 	case "verify":
+		// We either need default-factor (+ eventually more factors)
+		// or "reg" - We don't accept both of them unless we take
+		// one to get precedence.
+		var err error
+		verifyModeArgs, err = validateVerifyModeArgs(*defaultFactor, factors, *reg)
+		if err != nil {
+			return nil, err
+		}
 		iMode = 1
 	default:
 		return nil, errors.New("invalid mode")
 	}
 
 	return &CliArgs{
-		Mode:        iMode,
-		IgnoredIds:  ignoredIds,
-		StartLength: *startLength,
-		EndLength:   *endLength,
+		Mode:           iMode,
+		IgnoredIds:     ignoredIds,
+		StartLength:    *startLength,
+		EndLength:      *endLength,
+		VerifyModeArgs: verifyModeArgs,
 	}, nil
 }
 
@@ -77,4 +130,12 @@ func parseIdsList(arg string) []uint {
 	}
 
 	return ret
+}
+
+func validateVerifyModeArgs(
+	defaultFactor float64,
+	factors multiArg,
+	reg string,
+) (*VerifyArgs, error) {
+	return nil, nil
 }

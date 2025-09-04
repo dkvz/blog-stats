@@ -15,6 +15,11 @@ Right now I manually save the factors or formulas to be used for the word count 
 - [SQlite lib docs](https://practicalgobook.net/posts/go-sqlite-no-cgo/)
 - [Go-echarts online doc and examples](https://go-echarts.github.io/)
 
+## Style issues
+My project structure is a bit out there. It would be better to provide structs with methods in packages but I often export one or two functions instead.
+
+Might refactor that someday if I really got nothing else to do.
+
 ## TODO
 - [ ] Plot mode should probably be called "analyse" at this point
 - [x] Use readonly or writeonly channels when possible - I always forget about that
