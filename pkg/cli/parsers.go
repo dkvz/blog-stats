@@ -10,8 +10,8 @@ import (
 
 type Factor struct {
 	Value float64
-	Start int
-	End   int
+	Start uint
+	End   uint
 }
 
 type VerifyArgs struct {
@@ -40,7 +40,27 @@ func ParseFactor(f string) (*Factor, error) {
 		return nil, errors.New("missing parameters in factor, 3 values expected")
 	}
 
-	return nil, nil
+	// First item is supposed to be a float
+	fact, err := strconv.ParseFloat(strings.TrimSpace(vals[0]), 64)
+	if err != nil {
+		return nil, err
+	}
+
+	// Next we got two uint
+	start, err := strconv.ParseUint(strings.TrimSpace(vals[1]), 10, 32)
+	if err != nil {
+		return nil, err
+	}
+	end, err := strconv.ParseUint(strings.TrimSpace(vals[2]), 10, 32)
+	if err != nil {
+		return nil, err
+	}
+
+	return &Factor{
+		Value: fact,
+		Start: uint(start),
+		End:   uint(end),
+	}, nil
 }
 
 // Custom flag type backed by a simple slice of strings
