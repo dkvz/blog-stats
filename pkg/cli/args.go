@@ -55,6 +55,10 @@ func ParseFactor(f string) (*Factor, error) {
 		return nil, err
 	}
 
+	if start >= end {
+		return nil, errors.New("the start length cannot be equal or higher than the end length")
+	}
+
 	return &Factor{
 		Value: fact,
 		Start: uint(start),

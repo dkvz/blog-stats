@@ -26,6 +26,7 @@ func main() {
 	cliArgs, err := cli.ParseCliArgs()
 	if err != nil {
 		fmt.Println(err.Error())
+		fmt.Println()
 		flag.Usage()
 		return
 	}

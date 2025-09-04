@@ -3,6 +3,7 @@ package cli
 import (
 	"errors"
 	"flag"
+	"sort"
 	"strconv"
 	"strings"
 )
@@ -96,11 +97,62 @@ func validateVerifyModeArgs(
 	factors multiArg,
 	reg string,
 ) (*VerifyArgs, error) {
+	var ret *VerifyArgs
+
 	// If defaultFactor is > 0, use factor mode
 	// (default) and check if we have factors and
 	// if they're all valid
+	if defaultFactor > 0 {
+		var parsedFactors []Factor
+		for _, f := range factors {
+			fact, err := ParseFactor(f)
+			if err != nil {
+				return nil, err
+			}
+			// I could also check if any of the ranges overlap
+			// but we'll leave them as is and the system will
+			// pick the first factor that matches
+			parsedFactors = append(parsedFactors, *fact)
+		}
+
+		// Sort the factors:
+		sort.Slice(parsedFactors, func(i, j int) bool {
+			return parsedFactors[i].Start < parsedFactors[j].Start
+		})
+
+		ret = &VerifyArgs{
+			DefaultFactor: defaultFactor,
+			Factors:       parsedFactors,
+		}
+		return ret, nil
+	}
 
 	// Otherwise check if reg can be parsed
 	// If not, return missing argument error
-	return nil, nil
+	if reg == "" {
+		return nil, errors.New("missing 'reg' or 'default-factor' arguments")
+	}
+
+	regParms := strings.Split(reg, ",")
+	if len(regParms) < 2 {
+		return nil, errors.New("format for 'reg' argument is b,a (2 comma separated values) as in y=a+bx")
+	}
+
+	b, err := strconv.ParseFloat(strings.TrimSpace(regParms[0]), 64)
+	if err != nil {
+		return nil, err
+	}
+
+	a, err := strconv.ParseFloat(strings.TrimSpace(regParms[1]), 64)
+	if err != nil {
+		return nil, err
+	}
+
+	ret = &VerifyArgs{
+		DefaultFactor: b,
+		RegA:          a,
+		RegMode:       true,
+	}
+
+	return ret, nil
 }
