@@ -41,8 +41,11 @@ func main() {
 	// For the moment both modes need the full length stats
 	// computed:
 	results := lengthStats(dbs, cliArgs)
-	if cliArgs.Mode == 0 {
+	switch cliArgs.Mode {
+	case 0:
 		runModePlot(results)
+	case 1:
+		runVerifyMode(results, cliArgs.VerifyModeArgs)
 	}
 }
 
@@ -76,19 +79,31 @@ func lengthStats(
 func runVerifyMode(results *stats.ArticleLengthStatResult, args *cli.VerifyArgs) {
 	var predicted []stats.ArticleLengthPrediction
 
-	for _, s := range results.Stats {
-		// Run the prediction:
-		var pred *stats.ArticleLengthPrediction
-		if args.RegMode {
-			// Linear regression mode
-			// I'm doing hazardous float64 to int conversions but whatever.
-			pred = stats.NewArticleLengthPrediction(
+	if args.RegMode {
+		// Linear regression mode
+		// I'm doing hazardous float64 to int conversions but whatever.
+		fmt.Printf(
+			"Predicting using linear regression y = %f x + %f\n",
+			args.DefaultFactor,
+			args.RegA,
+		)
+		for _, s := range results.Stats {
+			// Run the prediction:
+			pred := stats.NewArticleLengthPrediction(
 				&s,
 				int(math.Round(float64(s.Length())*args.DefaultFactor+args.RegA)),
 			)
-		} else {
-			// Use factors mode, which is a bit more complex
-			// Use the first factor that matches:
+			predicted = append(predicted, *pred)
+		}
+	} else {
+		// Use factors mode, which is a bit more complex
+		// Use the first factor that matches.
+		fmt.Printf(
+			"Predicting using factors, default %f and %v extra factors\n",
+			args.DefaultFactor,
+			len(args.Factors),
+		)
+		for _, s := range results.Stats {
 			predWC := -1.0
 			if len(args.Factors) > 0 {
 				for _, f := range args.Factors {
@@ -104,14 +119,33 @@ func runVerifyMode(results *stats.ArticleLengthStatResult, args *cli.VerifyArgs)
 				predWC = float64(s.Length()) * args.DefaultFactor
 			}
 
-			pred = stats.NewArticleLengthPrediction(&s, int(predWC))
+			pred := stats.NewArticleLengthPrediction(&s, int(predWC))
+			predicted = append(predicted, *pred)
 		}
-
-		predicted = append(predicted, *pred)
 	}
 
 	// We can now sort the data according to distance
 	// and compute the average spread.
+	spread := stats.ComputePredictionSpread(predicted)
+
+	// Sort by distance squared to avoid the sign:
+	sort.Slice(predicted, func(i, j int) bool {
+		return predicted[i].DistanceToWordCountSquared() > predicted[j].DistanceToWordCountSquared()
+	})
+
+	fmt.Printf("\nPrections spread (variance - lower is better): %v\n", spread)
+
+	fmt.Printf("\nID\tWC\tP.WC\tDist\tLength\n")
+	for _, p := range predicted {
+		fmt.Printf(
+			"%v\t%v\t%v\t%v\t%v\n",
+			p.ArticleId,
+			p.WordCount(),
+			p.PredictedWordCount(),
+			p.DistanceToWordCount(),
+			p.Length(),
+		)
+	}
 
 }
 

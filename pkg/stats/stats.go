@@ -61,3 +61,16 @@ func ComputeAverage(data []float64) float64 {
 	}
 	return 0
 }
+
+func ComputePredictionSpread(predictions []ArticleLengthPrediction) float64 {
+	spread := 0.0
+	for _, p := range predictions {
+		spread += p.DistanceToWordCountSquared()
+	}
+	if spread != 0.0 {
+		// Indicates we don't have 0 items and thus a
+		// division by 0
+		spread /= float64(len(predictions))
+	}
+	return spread
+}
