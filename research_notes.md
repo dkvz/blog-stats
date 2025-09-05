@@ -92,3 +92,19 @@ I'll start with just two:
 - Below length 2000
 - After that
 
+## Early results
+
+### No ignored articles
+- Single factor: 0.120968
+- Spread is 339.8901565484333
+
+- Linear reg going through 0: 0.123463648676233*x 
+- Spread is 330.58284107741406
+
+- Linear reg: 0.123918557180491*x -26.1618180135265
+- Spread is 329.8185921134582 but all the other metrics look better
+
+### Ignored articles
+Listing the outliers comma separated:
+
+

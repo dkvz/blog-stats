@@ -23,7 +23,4 @@ Might refactor that someday if I really got nothing else to do.
 ## TODO
 - [ ] Plot mode should probably be called "analyse" at this point
 - [ ] I could add some plot to verify mode as well
-- [ ] Verify mode should also compute how much the distance is compared to the actual length (some percentage of "error")
-- [x] Use readonly or writeonly channels when possible - I always forget about that
-- [x] I also need the article ID for word count stats, helps debugging strange results
-- [x] I need to test word count with HTML comments at the start
+- [ ] Verify mode should show the averages of my "relative distance" metric
