@@ -127,6 +127,12 @@ func runVerifyMode(results *stats.ArticleLengthStatResult, args *cli.VerifyArgs)
 	// We can now sort the data according to distance
 	// and compute the average spread.
 	spread := stats.ComputePredictionSpread(predicted)
+	// Create a slice to compute the average relative distance
+	relDist := make([]float64, len(predicted))
+	for i, p := range predicted {
+		relDist[i] = p.DistanceRelativeToWordCount()
+	}
+	relDistAvg := stats.ComputeAverage(relDist)
 
 	// Sort by distance squared to avoid the sign:
 	sort.Slice(predicted, func(i, j int) bool {
@@ -136,6 +142,11 @@ func runVerifyMode(results *stats.ArticleLengthStatResult, args *cli.VerifyArgs)
 	fmt.Printf(
 		"\nPrections spread (std dev - lower is better): %v\n",
 		math.Sqrt(spread),
+	)
+
+	fmt.Printf(
+		"\nAverage for relative distances (lower is better): %v\n",
+		relDistAvg,
 	)
 
 	fmt.Printf("\nID\tWC\tP.WC\tDist\tRel.dist\tLength\n")

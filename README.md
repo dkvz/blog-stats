@@ -23,4 +23,4 @@ Might refactor that someday if I really got nothing else to do.
 ## TODO
 - [ ] Plot mode should probably be called "analyse" at this point
 - [ ] I could add some plot to verify mode as well
-- [ ] Verify mode should show the averages of my "relative distance" metric
+- [x] Verify mode should show the averages of my "relative distance" metric
