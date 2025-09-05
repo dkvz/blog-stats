@@ -140,7 +140,7 @@ func runVerifyMode(results *stats.ArticleLengthStatResult, args *cli.VerifyArgs)
 	})
 
 	fmt.Printf(
-		"\nPrections spread (std dev - lower is better): %v\n",
+		"\nPredictions spread (std dev - lower is better): %v\n",
 		math.Sqrt(spread),
 	)
 

@@ -162,4 +162,17 @@ Both plot and verify are done with the articles from the first list above remove
 - Spread: 339.562641
 - Avg relative distance: 0.13695656192296043
 
+#### Without first major outlier
+
+- Linear reg, Probably the best predictor
+- y = 0.123919 x + -26.189935 (extremely close to previous values)
+- Spread: 331.11352158905333
+- Avg relative distance: 0.1558176278364528
+
+- Triple factor
+    - [0,2500] -> 0.112252
+    - [2500,15000] -> 0.125722
+    - [15000,end] -> 0.120256
+- Spread: 348.218075
+- Avg relative distance: 0.16170156106967315
 
