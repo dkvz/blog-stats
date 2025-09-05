@@ -31,6 +31,18 @@ func NewArticleLengthPrediction(
 	}
 }
 
+func (a *ArticleLengthPrediction) PredictedWordCount() int {
+	return a.predictedWordCount
+}
+
+func (a *ArticleLengthPrediction) DistanceToWordCount() int {
+	return a.distanceToWordCount
+}
+
+func (a *ArticleLengthPrediction) DistanceToWordCountSquared() float64 {
+	return float64(a.distanceToWordCount) * float64(a.distanceToWordCount)
+}
+
 type ArticleLengthStatResult struct {
 	Stats []ArticleLengthStat
 }

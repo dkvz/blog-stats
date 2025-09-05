@@ -110,6 +110,9 @@ func runVerifyMode(results *stats.ArticleLengthStatResult, args *cli.VerifyArgs)
 		predicted = append(predicted, *pred)
 	}
 
+	// We can now sort the data according to distance
+	// and compute the average spread.
+
 }
 
 func runModePlot(results *stats.ArticleLengthStatResult) {
