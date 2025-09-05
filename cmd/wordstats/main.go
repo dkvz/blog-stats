@@ -130,19 +130,23 @@ func runVerifyMode(results *stats.ArticleLengthStatResult, args *cli.VerifyArgs)
 
 	// Sort by distance squared to avoid the sign:
 	sort.Slice(predicted, func(i, j int) bool {
-		return predicted[i].DistanceToWordCountSquared() > predicted[j].DistanceToWordCountSquared()
+		return predicted[i].DistanceRelativeToWordCount() > predicted[j].DistanceRelativeToWordCount()
 	})
 
-	fmt.Printf("\nPrections spread (variance - lower is better): %v\n", spread)
+	fmt.Printf(
+		"\nPrections spread (std dev - lower is better): %v\n",
+		math.Sqrt(spread),
+	)
 
-	fmt.Printf("\nID\tWC\tP.WC\tDist\tLength\n")
+	fmt.Printf("\nID\tWC\tP.WC\tDist\tRel.dist\tLength\n")
 	for _, p := range predicted {
 		fmt.Printf(
-			"%v\t%v\t%v\t%v\t%v\n",
+			"%v\t%v\t%v\t%v\t%.4f\t%v\n",
 			p.ArticleId,
 			p.WordCount(),
 			p.PredictedWordCount(),
 			p.DistanceToWordCount(),
+			p.DistanceRelativeToWordCount(),
 			p.Length(),
 		)
 	}

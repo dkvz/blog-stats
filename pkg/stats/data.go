@@ -1,6 +1,9 @@
 package stats
 
-import "fmt"
+import (
+	"fmt"
+	"math"
+)
 
 type ArticleLengthStat struct {
 	ArticleId         uint
@@ -13,6 +16,10 @@ type ArticleLengthPrediction struct {
 	ArticleLengthStat
 	predictedWordCount  int
 	distanceToWordCount int
+	// Divides the distance by the real word count
+	// to show how they relate as some measure of
+	// error, lower values are better
+	distanceRelativeToWordCount float64
 }
 
 func NewArticleLengthPrediction(
@@ -24,10 +31,14 @@ func NewArticleLengthPrediction(
 		wc = s.WordCount()
 	}
 
+	distance := predictedWC - wc
+	relDist := math.Abs(float64(distance) / float64(s.WordCount()))
 	return &ArticleLengthPrediction{
 		ArticleLengthStat:   *s,
 		predictedWordCount:  predictedWC,
-		distanceToWordCount: predictedWC - wc,
+		distanceToWordCount: distance,
+		// Pretty sure this isn't a percentage I always mix these up
+		distanceRelativeToWordCount: relDist,
 	}
 }
 
@@ -41,6 +52,10 @@ func (a *ArticleLengthPrediction) DistanceToWordCount() int {
 
 func (a *ArticleLengthPrediction) DistanceToWordCountSquared() float64 {
 	return float64(a.distanceToWordCount) * float64(a.distanceToWordCount)
+}
+
+func (a *ArticleLengthPrediction) DistanceRelativeToWordCount() float64 {
+	return a.distanceRelativeToWordCount
 }
 
 type ArticleLengthStatResult struct {
