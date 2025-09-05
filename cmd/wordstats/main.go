@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"math"
 	"net/http"
 	"sort"
 
@@ -72,8 +73,46 @@ func lengthStats(
 	return results
 }
 
-func runModePlot(results *stats.ArticleLengthStatResult) {
+func runVerifyMode(results *stats.ArticleLengthStatResult, args *cli.VerifyArgs) {
+	var predicted []stats.ArticleLengthPrediction
 
+	for _, s := range results.Stats {
+		// Run the prediction:
+		var pred *stats.ArticleLengthPrediction
+		if args.RegMode {
+			// Linear regression mode
+			// I'm doing hazardous float64 to int conversions but whatever.
+			pred = stats.NewArticleLengthPrediction(
+				&s,
+				int(math.Round(float64(s.Length())*args.DefaultFactor+args.RegA)),
+			)
+		} else {
+			// Use factors mode, which is a bit more complex
+			// Use the first factor that matches:
+			predWC := -1.0
+			if len(args.Factors) > 0 {
+				for _, f := range args.Factors {
+					if s.Length() >= int(f.Start) && s.Length() <= int(f.End) {
+						predWC = float64(s.Length()) * f.Value
+						break
+					}
+				}
+			}
+
+			// None of the factors matched:
+			if predWC < 0 {
+				predWC = float64(s.Length()) * args.DefaultFactor
+			}
+
+			pred = stats.NewArticleLengthPrediction(&s, int(predWC))
+		}
+
+		predicted = append(predicted, *pred)
+	}
+
+}
+
+func runModePlot(results *stats.ArticleLengthStatResult) {
 	// I'll be sorting things multiple times but that's fine
 	sort.Slice(results.Stats, func(i, j int) bool {
 		return results.Stats[i].WordsPerCharRatio() < results.Stats[j].WordsPerCharRatio()

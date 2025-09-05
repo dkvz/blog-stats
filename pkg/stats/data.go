@@ -9,6 +9,28 @@ type ArticleLengthStat struct {
 	wordsPerCharRatio float64
 }
 
+type ArticleLengthPrediction struct {
+	ArticleLengthStat
+	predictedWordCount  int
+	distanceToWordCount int
+}
+
+func NewArticleLengthPrediction(
+	s *ArticleLengthStat,
+	predictedWC int,
+) *ArticleLengthPrediction {
+	var wc int
+	if s != nil {
+		wc = s.WordCount()
+	}
+
+	return &ArticleLengthPrediction{
+		ArticleLengthStat:   *s,
+		predictedWordCount:  predictedWC,
+		distanceToWordCount: predictedWC - wc,
+	}
+}
+
 type ArticleLengthStatResult struct {
 	Stats []ArticleLengthStat
 }
