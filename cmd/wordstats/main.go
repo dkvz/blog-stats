@@ -37,12 +37,20 @@ func main() {
 		panic(err)
 	}
 
+	// For the moment both modes need the full length stats
+	// computed:
+	results := lengthStats(dbs, cliArgs)
 	if cliArgs.Mode == 0 {
-		runModePlot(dbs, cliArgs)
+		runModePlot(results)
 	}
 }
 
-func runModePlot(dbs *db.DbSqlite, cliArgs *cli.CliArgs) {
+// Fetches and computes the length stats for the given params
+// Might panic in case of error
+func lengthStats(
+	dbs *db.DbSqlite,
+	cliArgs *cli.CliArgs,
+) *stats.ArticleLengthStatResult {
 	ids, err := dbs.AllPublishedArticleIds()
 	if err != nil {
 		fmt.Println("encountered DB error getting article ids")
@@ -60,6 +68,11 @@ func runModePlot(dbs *db.DbSqlite, cliArgs *cli.CliArgs) {
 		fmt.Println("error in the subroutines")
 		panic(err)
 	}
+
+	return results
+}
+
+func runModePlot(results *stats.ArticleLengthStatResult) {
 
 	// I'll be sorting things multiple times but that's fine
 	sort.Slice(results.Stats, func(i, j int) bool {
