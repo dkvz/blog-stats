@@ -24,7 +24,6 @@ var comsReg = regexp.MustCompile(`(?sU)<!--.*-->`)
 
 // To use at the end to clean up the remaining tags
 // var tagsReg = regexp.MustCompile(`<.+?>.+?</.+?>`)
-// Will also destroy image legends but I can live with that
 // var tagsReg = regexp.MustCompile(`(?s)<[^>]*>[^>]*<[^>]*>`)
 // s flag was needed for "." to also match line feeds
 var tagsReg = regexp.MustCompile(`(?sU)<[^>]*>[^<]*</[^>]*>`)
