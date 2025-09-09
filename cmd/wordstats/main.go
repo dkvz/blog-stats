@@ -179,11 +179,14 @@ func runModePlot(results *stats.ArticleLengthStatResult) {
 	fmt.Printf("\nWord count stats:\n%s\n\n", wcStatsC)
 
 	// Compute length stats:
+	var totalLength int
 	lengthStats := make([]float64, len(results.Stats))
 	for i, r := range results.Stats {
 		lengthStats[i] = float64(r.Length())
+		totalLength += r.Length()
 	}
 	lengthStatsC := stats.ComputeStats(lengthStats)
+	fmt.Printf("\nTotal length for all articles combined: %v\n", totalLength)
 	fmt.Printf("\nArticle length stats:\n%s\n\n", lengthStatsC)
 
 	// Create a slice with the ratios to compute stats:
