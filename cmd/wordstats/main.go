@@ -171,11 +171,14 @@ func runModePlot(results *stats.ArticleLengthStatResult) {
 	})
 
 	// Compute word count stats:
+	totalWords := 0
 	wcStats := make([]float64, len(results.Stats))
 	for i, r := range results.Stats {
 		wcStats[i] = float64(r.WordCount())
+		totalWords += r.WordCount()
 	}
 	wcStatsC := stats.ComputeStats(wcStats)
+	fmt.Printf("\nTotal words for all articles combined: %v\n", totalWords)
 	fmt.Printf("\nWord count stats:\n%s\n\n", wcStatsC)
 
 	// Compute length stats:
