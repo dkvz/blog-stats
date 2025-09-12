@@ -149,17 +149,39 @@ func runVerifyMode(results *stats.ArticleLengthStatResult, args *cli.VerifyArgs)
 		relDistAvg,
 	)
 
-	fmt.Printf("\nID\tWC\tP.WC\tDist\tRel.dist\tLength\n")
-	for _, p := range predicted {
-		fmt.Printf(
-			"%v\t%v\t%v\t%v\t%.4f\t%v\n",
-			p.ArticleId,
-			p.WordCount(),
-			p.PredictedWordCount(),
-			p.DistanceToWordCount(),
-			p.DistanceRelativeToWordCount(),
-			p.Length(),
-		)
+	if args.TableMode {
+		// I just needed this for my blog so I just quick and
+		// dirtied the thing right there
+		fmt.Println("<table>\n<thead>\n<tr>\n" +
+			"<td>WC</td><td>Predicted WC</td>" +
+			"<td>Distance</td><td>Rel. Distance</td><td>Length</td>" +
+			"</tr>\n</thead>\n<tbody>")
+		for _, p := range predicted {
+			fmt.Println("<tr>")
+			fmt.Printf(
+				"<td>%v</td><td>%v</td><td>%v</td><td>%.4f</td><td>%v</td>",
+				p.WordCount(),
+				p.PredictedWordCount(),
+				p.DistanceToWordCount(),
+				p.DistanceRelativeToWordCount(),
+				p.Length(),
+			)
+			fmt.Println("</tr>")
+		}
+		fmt.Println("</tbody>\n</table>")
+	} else {
+		fmt.Printf("\nID\tWC\tP.WC\tDist\tRel.dist\tLength\n")
+		for _, p := range predicted {
+			fmt.Printf(
+				"%v\t%v\t%v\t%v\t%.4f\t%v\n",
+				p.ArticleId,
+				p.WordCount(),
+				p.PredictedWordCount(),
+				p.DistanceToWordCount(),
+				p.DistanceRelativeToWordCount(),
+				p.Length(),
+			)
+		}
 	}
 
 }

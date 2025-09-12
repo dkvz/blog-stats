@@ -23,6 +23,8 @@ type VerifyArgs struct {
 	RegMode bool
 	Factors []Factor
 	RegA    float64
+	// Outputs an HTML table in verify mode when true
+	TableMode bool
 }
 
 type CliArgs struct {

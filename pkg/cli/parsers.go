@@ -35,6 +35,7 @@ func ParseCliArgs() (*CliArgs, error) {
 		"factor",
 		"comma separated values in format factor,range-start,range-end (ranges of article lengths) can be used multiple times - Requires the default-factor option to be present as well",
 	)
+	tableMode := flag.Bool("t", false, "for verify mode only, outputs the results as an HTML table")
 
 	flag.Parse()
 
@@ -58,7 +59,12 @@ func ParseCliArgs() (*CliArgs, error) {
 		// or "reg" - We don't accept both of them unless we take
 		// one to get precedence.
 		var err error
-		verifyModeArgs, err = validateVerifyModeArgs(*defaultFactor, factors, *reg)
+		verifyModeArgs, err = validateVerifyModeArgs(
+			*defaultFactor,
+			factors,
+			*reg,
+			*tableMode,
+		)
 		if err != nil {
 			return nil, err
 		}
@@ -96,6 +102,7 @@ func validateVerifyModeArgs(
 	defaultFactor float64,
 	factors multiArg,
 	reg string,
+	tableMode bool,
 ) (*VerifyArgs, error) {
 	var ret *VerifyArgs
 
@@ -123,6 +130,7 @@ func validateVerifyModeArgs(
 		ret = &VerifyArgs{
 			DefaultFactor: defaultFactor,
 			Factors:       parsedFactors,
+			TableMode:     tableMode,
 		}
 		return ret, nil
 	}
@@ -152,6 +160,7 @@ func validateVerifyModeArgs(
 		DefaultFactor: b,
 		RegA:          a,
 		RegMode:       true,
+		TableMode:     tableMode,
 	}
 
 	return ret, nil
