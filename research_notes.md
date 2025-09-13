@@ -13,7 +13,7 @@ The time estimate will thus end up higher than reality.
 - Just live with it
 - Extract code and count half of the words (rounded up) in the total -> Would lower the std dev but is this what I want?
 
-**Remember some old articles don't use <pre><code> and just have <code>**.
+**Remember some old articles don't use *pre* then *code* and just have <code>**.
 
 I think I'll live with it, for article 153 the real value is 11.2 minutes and the estimate would be around 15. It's probably fine since people also sort of read the code. Maybe.
 
