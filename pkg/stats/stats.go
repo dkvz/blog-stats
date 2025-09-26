@@ -19,13 +19,19 @@ func ComputeStats(data []float64) *SliceAnalytics {
 	sort.Float64s(dataCopy)
 
 	avg := ComputeAverage(dataCopy)
-	// Compute std dev
+	// Compute std dev and variance
+	// There is a mystery compensation to add to the
+	// traditional variance formula for reasons I DO
+	// NOT UNDERSTAND but here we are.
 	var variance float64
+	var compensation float64
 	for _, v := range data {
 		diff := v - avg
+		compensation += diff
 		variance += diff * diff
 	}
-	variance /= float64(dataLen)
+	// variance /= float64(dataLen)
+	variance = (variance - (compensation * compensation / float64(len(data)))) / float64(len(data)-1)
 	stdDev := math.Sqrt(variance)
 
 	// remaining: median, min and max
@@ -58,7 +64,7 @@ func ComputeAverage(data []float64) float64 {
 	// A non zero sum means we got at least 1 result
 	// So no divide by 0 is possible
 	if sum > 0 {
-		return float64(sum) / float64(len(data))
+		return sum / float64(len(data))
 	}
 	return 0
 }

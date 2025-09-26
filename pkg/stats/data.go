@@ -73,12 +73,13 @@ type SliceAnalytics struct {
 
 func (sl *SliceAnalytics) String() string {
 	return fmt.Sprintf(
-		"Avg: %f\tMin: %f\tMax: %f\nStdDev: %f\tMed: %f",
+		"Avg: %f\tMin: %f\tMax: %f\nStdDev: %f\tMed: %f\tVar: %f",
 		sl.Average,
 		sl.Min,
 		sl.Max,
 		sl.StdDev,
 		sl.Median,
+		sl.Variance,
 	)
 }
 
