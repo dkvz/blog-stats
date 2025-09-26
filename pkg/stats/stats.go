@@ -74,3 +74,50 @@ func ComputePredictionSpread(predictions []ArticleLengthPrediction) float64 {
 	}
 	return spread
 }
+
+// Slices x and y have to be the same size or things will go wrong
+func ComputeLinearRegForcedOrigin(x []float64, y []float64) float64 {
+	var xySum, x2Sum float64
+	for i, xv := range x {
+		yv := y[i]
+		xySum += xv * yv
+		x2Sum += xv * xv
+	}
+
+	if x2Sum == 0 {
+		return 0.0
+	}
+
+	return xySum / x2Sum
+}
+
+// Computes normal linear regression for the series
+// Returns beta, alpha
+// Where: y = alpha + beta * x
+//
+// Slices x and y have to be the same size or things will go wrong
+func ComputeLinearReg(
+	x []float64,
+	y []float64,
+	varianceX float64,
+	averageX float64,
+	averageY float64,
+) (float64, float64) {
+	// Compute the covariance:
+	var ss, xcompensation, ycompensation float64
+
+	for i, xv := range x {
+		yv := y[i]
+		xd := xv - averageX
+		yd := yv - averageY
+		ss += xd * yd
+		xcompensation += xd
+		ycompensation += yd
+	}
+	cov := (ss - xcompensation*ycompensation/float64(len(x))) / float64(len(x)-1)
+
+	beta := cov / varianceX
+	alpha := averageY - (beta * averageX)
+
+	return beta, alpha
+}
