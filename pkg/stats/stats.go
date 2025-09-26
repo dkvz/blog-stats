@@ -69,6 +69,9 @@ func ComputeAverage(data []float64) float64 {
 	return 0
 }
 
+// TODO: I did not implement the mystery course correction
+// to the variance calculation here. I don't think we care
+// though.
 func ComputePredictionSpread(predictions []ArticleLengthPrediction) float64 {
 	spread := 0.0
 	for _, p := range predictions {

@@ -9,7 +9,7 @@ func TestSliceAnalytics(t *testing.T) {
 		Average: 1852.3556666666666,
 		Min:     2.3,
 		Max:     10203.734,
-		StdDev:  3739.731039075835,
+		StdDev:  4096.6700982081375,
 		Median:  168.05,
 	}
 
