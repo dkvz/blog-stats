@@ -39,11 +39,12 @@ func ComputeStats(data []float64) *SliceAnalytics {
 	}
 
 	ret := &SliceAnalytics{
-		Min:     dataCopy[0],
-		Max:     dataCopy[dataLen-1],
-		Median:  median,
-		Average: avg,
-		StdDev:  stdDev,
+		Min:      dataCopy[0],
+		Max:      dataCopy[dataLen-1],
+		Median:   median,
+		Average:  avg,
+		StdDev:   stdDev,
+		Variance: variance,
 	}
 
 	return ret
@@ -85,7 +86,7 @@ func ComputeLinearRegForcedOrigin(x []float64, y []float64) float64 {
 	}
 
 	if x2Sum == 0 {
-		return 0.0
+		return 0
 	}
 
 	return xySum / x2Sum
@@ -103,6 +104,11 @@ func ComputeLinearReg(
 	averageX float64,
 	averageY float64,
 ) (float64, float64) {
+	if len(x)-1 == 0 || varianceX == 0 {
+		// Would cause divide by 0 errors
+		return 0, 0
+	}
+
 	// Compute the covariance:
 	var ss, xcompensation, ycompensation float64
 

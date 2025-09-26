@@ -63,11 +63,12 @@ type ArticleLengthStatResult struct {
 }
 
 type SliceAnalytics struct {
-	Min     float64
-	Max     float64
-	StdDev  float64
-	Median  float64
-	Average float64
+	Min      float64
+	Max      float64
+	StdDev   float64
+	Variance float64
+	Median   float64
+	Average  float64
 }
 
 func (sl *SliceAnalytics) String() string {

@@ -192,6 +192,26 @@ func runModePlot(results *stats.ArticleLengthStatResult) {
 	fmt.Printf("\nTotal length for all articles combined: %v\n", totalLength)
 	fmt.Printf("\nArticle length stats:\n%s\n\n", lengthStatsC)
 
+	// Compute possible linear regression:
+	forcedOrigCoeff := stats.ComputeLinearRegForcedOrigin(lengthStats, wcStats)
+	fmt.Printf(
+		"\nCoeff. of linear regression forced through origin: %v\n",
+		forcedOrigCoeff,
+	)
+
+	beta, alpha := stats.ComputeLinearReg(
+		lengthStats,
+		wcStats,
+		lengthStatsC.Variance,
+		lengthStatsC.Average,
+		wcStatsC.Average,
+	)
+	fmt.Printf(
+		"\nLinear regression: y = %v * x + %v\n\n",
+		beta,
+		alpha,
+	)
+
 	// Create a slice with the ratios to compute stats:
 	ratios := make([]float64, len(results.Stats))
 	for i, r := range results.Stats {
