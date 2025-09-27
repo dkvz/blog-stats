@@ -176,3 +176,19 @@ Both plot and verify are done with the articles from the first list above remove
 - Spread: 348.218075
 - Avg relative distance: 0.16170156106967315
 
+#### Without 79 and 65
+
+I will use these values:
+- Linear reg: 0.12318806842671491,-23.450114456215488
+    - Spread 355.25
+    - Avg relative dist: 0.14356484614531867
+
+- Linear reg forced origin: 0.12278164827455784
+    - 355.73
+    - 0.1526297803255044
+
+- 1 factor: 0.122565
+    - Spread: 355.82
+    - Avg relative dist: 0.15255261603768946
+
+
